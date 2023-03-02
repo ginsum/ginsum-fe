@@ -1,21 +1,56 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { VscChevronLeft, VscChevronRight } from 'react-icons/vsc';
 
 const Pagination = () => {
+  const [totalPage, setTotalPage] = useState<number>(16);
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [pageRange, setPageRange] = useState<number[]>([1, 2, 3, 4, 5]);
+
+  const onClickPrevious = () => {
+    const startNum = pageRange[0] - 5;
+    const arr = [];
+    for (let i = 0; i < 5; i++) {
+      arr.push(startNum + i);
+    }
+    setPageRange(arr);
+    setCurrentPage(pageRange[0] - 1);
+  };
+
+  const onClickNext = () => {
+    const startNum = pageRange[0] + 5;
+    const arr = [];
+    for (let i = 0; i < 5; i++) {
+      if (startNum + i <= totalPage) {
+        arr.push(startNum + i);
+      }
+    }
+    setPageRange(arr);
+    setCurrentPage(startNum);
+  };
+
+  const onClickPageNumber = (page: number) => {
+    setCurrentPage(page);
+  };
+
   return (
     <Container>
-      <Button disabled>
+      <Button disabled={currentPage - 5 <= 0} onClick={onClickPrevious}>
         <VscChevronLeft />
       </Button>
       <PageWrapper>
-        {[1, 2, 3, 4, 5].map((page) => (
-          <Page key={page} selected={page === 1} disabled={page === 1}>
+        {pageRange.map((page) => (
+          <Page
+            key={page}
+            selected={page === currentPage}
+            // disabled={page === 1}
+            onClick={() => onClickPageNumber(page)}
+          >
             {page}
           </Page>
         ))}
       </PageWrapper>
-      <Button disabled={false}>
+      <Button disabled={currentPage / 5 >= totalPage / 5} onClick={onClickNext}>
         <VscChevronRight />
       </Button>
     </Container>

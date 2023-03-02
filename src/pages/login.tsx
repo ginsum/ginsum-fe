@@ -2,8 +2,22 @@ import Link from 'next/link';
 import type { NextPage } from 'next';
 import React from 'react';
 import styled from 'styled-components';
+import { FieldValues, useForm } from 'react-hook-form';
+
+import InputForm from '../components/InputForm';
+import { RHFIdRules, RHFPasswordRules } from '../utilities/reactHookForm';
 
 const LoginPage: NextPage = () => {
+  const {
+    register,
+    formState: { errors, isValid },
+    handleSubmit,
+  } = useForm({ mode: 'onChange' });
+
+  const onSubmit = (data: FieldValues) => {
+    console.log(data);
+  };
+
   return (
     <>
       <Header>
@@ -14,12 +28,23 @@ const LoginPage: NextPage = () => {
           <p>login</p>
         </Link>
       </Header>
-      <Form>
-        <div>아이디</div>
-        <TextInput type='text' />
-        <div>비밀번호</div>
-        <TextInput type='password' />
-        <LoginButton disabled>로그인</LoginButton>
+      <Form onSubmit={handleSubmit(onSubmit)}>
+        <InputForm
+          type='text'
+          label='아이디'
+          errorText={errors.id?.message}
+          {...register('id', RHFIdRules)}
+        />
+        <InputForm
+          type='password'
+          label='비밀번호'
+          errorText={errors.password?.message}
+          {...register('password', RHFPasswordRules)}
+        />
+
+        <LoginButton type='submit' disabled={!isValid}>
+          로그인
+        </LoginButton>
       </Form>
     </>
   );
@@ -38,7 +63,7 @@ const Title = styled.a`
   font-size: 48px;
 `;
 
-const Form = styled.div`
+const Form = styled.form`
   display: flex;
   flex-direction: column;
   margin-top: 40px;

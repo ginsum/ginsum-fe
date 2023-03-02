@@ -1,20 +1,24 @@
+import { forwardRef } from 'react';
+import { FieldError, Merge, FieldErrorsImpl } from 'react-hook-form';
 import styled from 'styled-components';
 
 type InputFormProps = {
   type: string;
   label: string;
-  errorText?: string;
+  name: string;
+  errorText?: string | FieldError | Merge<FieldError, FieldErrorsImpl<any>> | undefined;
 };
 
-const InputForm = ({ type, label, errorText }: InputFormProps) => {
+const InputForm = forwardRef(({ type, label, errorText, ...others }: InputFormProps, ref: any) => {
   return (
     <Container>
       <LabelText>{label}</LabelText>
-      <Input type={type} />
-      <ErrorText>{errorText}</ErrorText>
+      <Input type={type} ref={ref} {...others} />
+      {typeof errorText === 'string' && <ErrorText>{errorText}</ErrorText>}
     </Container>
   );
-};
+});
+InputForm.displayName = 'Input';
 
 export default InputForm;
 

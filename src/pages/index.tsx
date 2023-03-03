@@ -1,30 +1,42 @@
 import { useRouter } from 'next/router';
-import Link from 'next/link';
 import type { NextPage } from 'next';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 
-import products from '../api/data/products.json';
 import ProductList from '../components/ProductList';
 import Pagination from '../components/Pagination';
+import PageHeader from '../components/PageHeader';
+import { Product } from '../types/product';
+import { getProducts } from '../fetch';
 
 const HomePage: NextPage = () => {
+  const [products, setProducts] = useState<Product[]>([]);
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [totalCount, setTotalCount] = useState<number>(0);
   const router = useRouter();
   const { page } = router.query;
 
+  const fetchProducts = async () => {
+    const { products, totalCount } = await getProducts({ page: currentPage });
+
+    setProducts(products);
+    setTotalCount(totalCount);
+  };
+
+  useEffect(() => {
+    fetchProducts();
+  }, [currentPage]);
+
   return (
     <>
-      <Header>
-        <Link href='/'>
-          <Title>HAUS</Title>
-        </Link>
-        <Link href='/login'>
-          <p>login</p>
-        </Link>
-      </Header>
+      <PageHeader />
       <Container>
-        <ProductList products={products.slice(0, 10)} />
-        <Pagination />
+        <ProductList products={products} />
+        <Pagination
+          totalCount={totalCount}
+          currentPage={currentPage}
+          setCurrentPage={setCurrentPage}
+        />
       </Container>
     </>
   );
@@ -32,18 +44,7 @@ const HomePage: NextPage = () => {
 
 export default HomePage;
 
-const Header = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 20px;
-`;
-
-const Title = styled.a`
-  font-size: 48px;
-`;
-
-const Container = styled.div`
+const Container = styled.main`
   display: flex;
   flex-direction: column;
   align-items: center;

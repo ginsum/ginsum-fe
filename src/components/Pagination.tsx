@@ -2,10 +2,16 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { VscChevronLeft, VscChevronRight } from 'react-icons/vsc';
 
-const Pagination = () => {
-  const [totalPage, setTotalPage] = useState<number>(16);
-  const [currentPage, setCurrentPage] = useState<number>(1);
-  const [pageRange, setPageRange] = useState<number[]>([1, 2, 3, 4, 5]);
+type PaginationProps = {
+  totalCount: number;
+  currentPage: number;
+  setCurrentPage: (page: number) => void;
+};
+
+const Pagination = ({ totalCount, currentPage, setCurrentPage }: PaginationProps) => {
+  const [pageRange, setPageRange] = useState<number[]>([1, 2, 3, 4, 5]); // 처음에 5페이지 안될때
+
+  const totalPage = Math.ceil(totalCount / 5);
 
   const onClickPrevious = () => {
     const startNum = pageRange[0] - 5;

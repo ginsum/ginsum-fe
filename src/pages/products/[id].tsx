@@ -1,27 +1,34 @@
-import Link from 'next/link';
 import type { NextPage } from 'next';
-import React from 'react';
+import { useRouter } from 'next/router';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 
-import products from '../../api/data/products.json';
+import PageHeader from '../../components/PageHeader';
+import { getProductInfo } from '../../fetch';
+import { Product } from '../../types/product';
 
 const ProductDetailPage: NextPage = () => {
-  const product = products[0];
+  const [product, setProduct] = useState<Product | null>(null);
+  const router = useRouter();
+  const { id = '1' } = router.query;
+
+  const fetchProductInfo = async () => {
+    const { product } = await getProductInfo(id as string);
+
+    setProduct(product);
+  };
+
+  useEffect(() => {
+    fetchProductInfo();
+  }, []);
 
   return (
     <>
-      <Header>
-        <Link href='/'>
-          <Title>HAUS</Title>
-        </Link>
-        <Link href='/login'>
-          <p>login</p>
-        </Link>
-      </Header>
-      <Thumbnail src={product.thumbnail ? product.thumbnail : '/defaultThumbnail.jpg'} />
+      <PageHeader />
+      <Thumbnail src={product?.thumbnail ? product.thumbnail : '/defaultThumbnail.jpg'} />
       <ProductInfoWrapper>
-        <Name>{product.name}</Name>
-        <Price>{product.price.toLocaleString()}원</Price>
+        <Name>{product?.name}</Name>
+        <Price>{product?.price?.toLocaleString()}원</Price>
       </ProductInfoWrapper>
     </>
   );
@@ -29,23 +36,12 @@ const ProductDetailPage: NextPage = () => {
 
 export default ProductDetailPage;
 
-const Header = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 20px;
-`;
-
-const Title = styled.a`
-  font-size: 48px;
-`;
-
 const Thumbnail = styled.img`
   width: 100%;
   height: 420px;
 `;
 
-const ProductInfoWrapper = styled.div`
+const ProductInfoWrapper = styled.main`
   margin-top: 20px;
   padding: 0 20px;
 `;

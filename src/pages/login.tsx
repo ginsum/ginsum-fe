@@ -1,33 +1,40 @@
-import Link from 'next/link';
+import { useRouter } from 'next/router';
 import type { NextPage } from 'next';
 import React from 'react';
 import styled from 'styled-components';
 import { FieldValues, useForm } from 'react-hook-form';
+import { useSetRecoilState } from 'recoil';
+import Cookies from 'universal-cookie';
 
 import InputForm from '../components/InputForm';
 import { RHFIdRules, RHFPasswordRules } from '../utilities/reactHookForm';
+import { login } from '../fetch';
+import { userInfoState } from '../recoil/atom';
+import PageHeader from '../components/PageHeader';
 
 const LoginPage: NextPage = () => {
   const {
     register,
     formState: { errors, isValid },
     handleSubmit,
-  } = useForm({ mode: 'onChange' });
+  } = useForm({ mode: 'onBlur' });
 
-  const onSubmit = (data: FieldValues) => {
-    console.log(data);
+  const router = useRouter();
+  const setUserInfoState = useSetRecoilState(userInfoState);
+
+  const onSubmit = async (data: FieldValues) => {
+    const { id, password } = data;
+    const { accessToken, user } = await login({ id, password });
+
+    setUserInfoState(user);
+    const cookies = new Cookies();
+    cookies.set('accessToken', accessToken);
+    router.push('/');
   };
 
   return (
     <>
-      <Header>
-        <Link href='/'>
-          <Title>HAUS</Title>
-        </Link>
-        <Link href='/login'>
-          <p>login</p>
-        </Link>
-      </Header>
+      <PageHeader />
       <Form onSubmit={handleSubmit(onSubmit)}>
         <InputForm
           type='text'
@@ -52,26 +59,11 @@ const LoginPage: NextPage = () => {
 
 export default LoginPage;
 
-const Header = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 20px;
-`;
-
-const Title = styled.a`
-  font-size: 48px;
-`;
-
 const Form = styled.form`
   display: flex;
   flex-direction: column;
   margin-top: 40px;
   padding: 0 20px 40px;
-`;
-
-const TextInput = styled.input`
-  border: 1px solid #000;
 `;
 
 const LoginButton = styled.button`

@@ -9,7 +9,7 @@ export const RHFIdRules = {
     message: '최소 5자 이상 입력해야 합니다.',
   },
   pattern: {
-    value: /[A-Za-z]{3}/,
+    value: /^[A-Za-z0-9]*$/,
     message: '올바른 아이디 형식으로 입력해주세요.',
   },
 };
@@ -25,7 +25,7 @@ export const RHFPasswordRules = {
     message: '최소 8자 이상 입력해야 합니다.',
   },
   pattern: {
-    value: /[A-Za-z]{3}/,
-    message: '올바른 아이디 형식으로 입력해주세요.',
+    value: /(?=.*\d)(?=.*[a-zA-ZS])/,
+    message: '올바른 비밀번호 형식으로 입력해주세요.',
   },
 };

@@ -1,43 +1,11 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { VscChevronLeft, VscChevronRight } from 'react-icons/vsc';
+import usePagination from '../hooks/usePagination';
 
-type PaginationProps = {
-  totalCount: number;
-  currentPage: number;
-  setCurrentPage: (page: number) => void;
-};
-
-const Pagination = ({ totalCount, currentPage, setCurrentPage }: PaginationProps) => {
-  const [pageRange, setPageRange] = useState<number[]>([1, 2, 3, 4, 5]); // 처음에 5페이지 안될때
-
-  const totalPage = Math.ceil(totalCount / 5);
-
-  const onClickPrevious = () => {
-    const startNum = pageRange[0] - 5;
-    const arr = [];
-    for (let i = 0; i < 5; i++) {
-      arr.push(startNum + i);
-    }
-    setPageRange(arr);
-    setCurrentPage(pageRange[0] - 1);
-  };
-
-  const onClickNext = () => {
-    const startNum = pageRange[0] + 5;
-    const arr = [];
-    for (let i = 0; i < 5; i++) {
-      if (startNum + i <= totalPage) {
-        arr.push(startNum + i);
-      }
-    }
-    setPageRange(arr);
-    setCurrentPage(startNum);
-  };
-
-  const onClickPageNumber = (page: number) => {
-    setCurrentPage(page);
-  };
+const Pagination = () => {
+  const { currentPage, pageRange, totalPage, onClickPrevious, onClickNext, onClickPageNumber } =
+    usePagination();
 
   return (
     <Container>
@@ -49,7 +17,7 @@ const Pagination = ({ totalCount, currentPage, setCurrentPage }: PaginationProps
           <Page
             key={page}
             selected={page === currentPage}
-            // disabled={page === 1}
+            disabled={page === currentPage}
             onClick={() => onClickPageNumber(page)}
           >
             {page}

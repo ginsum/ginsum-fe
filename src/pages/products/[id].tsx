@@ -9,13 +9,18 @@ import { Product } from '../../types/product';
 
 const ProductDetailPage: NextPage = () => {
   const [product, setProduct] = useState<Product | null>(null);
+
   const router = useRouter();
-  const { id = '1' } = router.query;
+  const { id } = router.query;
 
   const fetchProductInfo = async () => {
-    const { product } = await getProductInfo(id as string);
+    try {
+      const { product } = await getProductInfo(id as string);
 
-    setProduct(product);
+      setProduct(product);
+    } catch (error) {
+      router.push('/404');
+    }
   };
 
   useEffect(() => {

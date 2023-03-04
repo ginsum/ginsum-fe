@@ -1,11 +1,17 @@
-import React, { useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { VscChevronLeft, VscChevronRight } from 'react-icons/vsc';
 import usePagination from '../hooks/usePagination';
 
-const Pagination = () => {
-  const { currentPage, pageRange, totalPage, onClickPrevious, onClickNext, onClickPageNumber } =
-    usePagination();
+type PaginationProps = {
+  totalCount: number;
+  currentPage: number;
+};
+
+const Pagination = ({ totalCount, currentPage }: PaginationProps) => {
+  const { pageRange, totalPage, onClickPrevious, onClickNext, onClickPageNumber } = usePagination({
+    totalCount,
+  });
 
   return (
     <Container>

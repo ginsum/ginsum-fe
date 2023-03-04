@@ -1,14 +1,16 @@
 import styled from 'styled-components';
 
-import usePagination from '../hooks/usePagination';
+import { Product } from '../types/product';
 import ProductItem from './ProductItem';
 
-const ProductList = () => {
-  const { products } = usePagination();
+type ProductListProps = {
+  products: Product[];
+};
 
+const ProductList = ({ products }: ProductListProps) => {
   return (
     <Container>
-      {products.map((product) => (
+      {products?.map((product) => (
         <ProductItem key={product.id} product={product} />
       ))}
     </Container>

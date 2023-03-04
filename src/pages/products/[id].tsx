@@ -1,5 +1,6 @@
 import type { GetServerSideProps, InferGetServerSidePropsType, NextPage } from 'next';
 import router from 'next/router';
+import Image from 'next/image';
 import React, { useEffect } from 'react';
 import styled from 'styled-components';
 
@@ -15,15 +16,24 @@ const ProductDetailPage: NextPage = ({ product }: ProductDetailPageProps) => {
     }
   }, []);
 
+  const { thumbnail, name, price } = product;
+
   return (
     <>
       <PageHeader />
       {product && (
         <>
-          <Thumbnail src={product?.thumbnail ? product?.thumbnail : '/defaultThumbnail.jpg'} />
+          <Image
+            src={thumbnail ? thumbnail : '/defaultThumbnail.jpg'}
+            width={420}
+            height={420}
+            alt={name}
+            blurDataURL='/blur.jpg'
+            placeholder='blur'
+          />
           <ProductInfoWrapper>
-            <Name>{product?.name}</Name>
-            <Price>{product?.price?.toLocaleString()}원</Price>
+            <Name>{name}</Name>
+            <Price>{price?.toLocaleString()}원</Price>
           </ProductInfoWrapper>
         </>
       )}
@@ -48,11 +58,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 };
 
 export default ProductDetailPage;
-
-const Thumbnail = styled.img`
-  width: 100%;
-  height: 420px;
-`;
 
 const ProductInfoWrapper = styled.main`
   margin-top: 20px;

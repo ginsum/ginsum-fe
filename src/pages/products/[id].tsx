@@ -1,42 +1,50 @@
-import type { NextPage } from 'next';
-import { useRouter } from 'next/router';
-import React, { useEffect, useState } from 'react';
+import type { GetServerSideProps, InferGetServerSidePropsType, NextPage } from 'next';
+import router from 'next/router';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
 
 import PageHeader from '../../components/PageHeader';
 import { getProductInfo } from '../../fetch';
-import { Product } from '../../types/product';
 
-const ProductDetailPage: NextPage = () => {
-  const [product, setProduct] = useState<Product | null>(null);
+type ProductDetailPageProps = InferGetServerSidePropsType<typeof getServerSideProps>;
 
-  const router = useRouter();
-  const { id } = router.query;
-
-  const fetchProductInfo = async () => {
-    try {
-      const { product } = await getProductInfo(id as string);
-
-      setProduct(product);
-    } catch (error) {
+const ProductDetailPage: NextPage = ({ product }: ProductDetailPageProps) => {
+  useEffect(() => {
+    if (!product) {
       router.push('/404');
     }
-  };
-
-  useEffect(() => {
-    fetchProductInfo();
   }, []);
 
   return (
     <>
       <PageHeader />
-      <Thumbnail src={product?.thumbnail ? product.thumbnail : '/defaultThumbnail.jpg'} />
-      <ProductInfoWrapper>
-        <Name>{product?.name}</Name>
-        <Price>{product?.price?.toLocaleString()}원</Price>
-      </ProductInfoWrapper>
+      {product && (
+        <>
+          <Thumbnail src={product?.thumbnail ? product?.thumbnail : '/defaultThumbnail.jpg'} />
+          <ProductInfoWrapper>
+            <Name>{product?.name}</Name>
+            <Price>{product?.price?.toLocaleString()}원</Price>
+          </ProductInfoWrapper>
+        </>
+      )}
     </>
   );
+};
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  try {
+    const { id } = context.query;
+    const { product } = await getProductInfo(id as string);
+
+    return {
+      props: { product },
+    };
+  } catch (err) {
+    console.log(err);
+    return {
+      props: {},
+    };
+  }
 };
 
 export default ProductDetailPage;

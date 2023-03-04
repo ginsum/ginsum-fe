@@ -4,6 +4,7 @@ import { RecoilRoot } from 'recoil';
 
 import setupMSW from '../api/setup';
 import GlobalStyle from '../styles/GlobalStyle';
+import AuthGard from '../components/AuthGard';
 
 setupMSW();
 
@@ -14,7 +15,9 @@ function MyApp({ Component, pageProps }: AppProps) {
         <GlobalStyle />
         <Background />
         <Content>
-          <Component {...pageProps} />
+          <AuthGard>
+            <Component {...pageProps} />
+          </AuthGard>
         </Content>
       </RecoilRoot>
     </>

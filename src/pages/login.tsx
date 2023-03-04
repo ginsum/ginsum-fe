@@ -1,40 +1,41 @@
-import { useRouter } from 'next/router';
 import type { NextPage } from 'next';
-import React from 'react';
+import { useRouter } from 'next/router';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import { FieldValues, useForm } from 'react-hook-form';
-import { useSetRecoilState } from 'recoil';
-import Cookies from 'universal-cookie';
+import { useRecoilValue } from 'recoil';
 
-import InputForm from '../components/InputForm';
+import useAuth from '../hooks/useAuth';
 import { RHFIdRules, RHFPasswordRules } from '../utilities/reactHookForm';
-import { login } from '../fetch';
-import { userInfoState } from '../recoil/atom';
 import PageHeader from '../components/PageHeader';
+import InputForm from '../components/InputForm';
+import { userInfoState } from '../recoil/atom';
 
 const LoginPage: NextPage = () => {
+  const { name } = useRecoilValue(userInfoState);
+  const router = useRouter();
+
+  useEffect(() => {
+    if (name) {
+      router.push('/');
+    }
+  }, [name]);
+
   const {
     register,
     formState: { errors, isValid },
     handleSubmit,
   } = useForm({ mode: 'onBlur' });
 
-  const router = useRouter();
-  const setUserInfoState = useSetRecoilState(userInfoState);
+  const { login } = useAuth();
 
-  const onSubmit = async (data: FieldValues) => {
-    const { id, password } = data;
-    const { accessToken, user } = await login({ id, password });
-
-    setUserInfoState(user);
-    const cookies = new Cookies();
-    cookies.set('accessToken', accessToken);
-    router.push('/');
+  const onSubmit = (data: FieldValues) => {
+    login(data);
   };
 
   return (
     <>
-      <PageHeader />
+      <PageHeader isLoginPage />
       <Form onSubmit={handleSubmit(onSubmit)}>
         <InputForm
           type='text'

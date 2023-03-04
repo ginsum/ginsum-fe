@@ -1,6 +1,6 @@
 import API from '../utilities/axios';
 
-export const login = async ({ id, password }: { id: string; password: string }) => {
+export const userLogin = async ({ id, password }: { id: string; password: string }) => {
   try {
     const response = await API.post('/login', {
       id,
@@ -10,6 +10,7 @@ export const login = async ({ id, password }: { id: string; password: string }) 
     return response.data;
   } catch (error) {
     console.error(error);
+    throw error;
   }
 };
 
@@ -17,9 +18,10 @@ export const getUerInfo = async (userId: string) => {
   try {
     const response = await API.get(`/users/${userId}`);
 
-    return response;
+    return response.data;
   } catch (error) {
     console.error(error);
+    throw error;
   }
 };
 
@@ -30,6 +32,7 @@ export const getProducts = async ({ page }: { page: number }) => {
     return response.data;
   } catch (error) {
     console.error(error);
+    throw error;
   }
 };
 
@@ -40,5 +43,6 @@ export const getProductInfo = async (productId: string) => {
     return response.data;
   } catch (error) {
     console.error(error);
+    throw error;
   }
 };

@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { useRecoilValue } from 'recoil';
 
 import { userInfoState } from '../recoil/atom';
+import useAuth from '../hooks/useAuth';
 
 const Header = styled.header`
   display: flex;
@@ -15,16 +16,31 @@ const Title = styled.h1`
   font-size: 48px;
 `;
 
-const PageHeader = () => {
+type PageHeaderProps = {
+  isLoginPage?: boolean;
+};
+
+const PageHeader = ({ isLoginPage }: PageHeaderProps) => {
   const { name } = useRecoilValue(userInfoState);
+
+  const { logout } = useAuth();
+
   return (
     <Header>
       <Link href='/'>
         <Title>HAUS</Title>
       </Link>
-      <Link href='/login'>
-        <p>{name ? name : 'login'}</p>
-      </Link>
+      {!isLoginPage &&
+        (name ? (
+          <div>
+            <p>{name}</p>
+            <button onClick={logout}>logout</button>
+          </div>
+        ) : (
+          <Link href='/login'>
+            <button>login</button>
+          </Link>
+        ))}
     </Header>
   );
 };

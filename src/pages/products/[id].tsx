@@ -1,51 +1,65 @@
-import Link from 'next/link';
-import type { NextPage } from 'next';
-import React from 'react';
+import type { GetServerSideProps, InferGetServerSidePropsType, NextPage } from 'next';
+import router from 'next/router';
+import Image from 'next/image';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
 
-import products from '../../api/data/products.json';
+import { getProductInfo } from '../../fetch';
+import PageHeader from '../../components/PageHeader';
 
-const ProductDetailPage: NextPage = () => {
-  const product = products[0];
+type ProductDetailPageProps = InferGetServerSidePropsType<typeof getServerSideProps>;
+
+const ProductDetailPage: NextPage = ({ product }: ProductDetailPageProps) => {
+  useEffect(() => {
+    if (!product) {
+      router.push('/404');
+    }
+  }, []);
+
+  const { thumbnail, name, price } = product;
 
   return (
     <>
-      <Header>
-        <Link href='/'>
-          <Title>HAUS</Title>
-        </Link>
-        <Link href='/login'>
-          <p>login</p>
-        </Link>
-      </Header>
-      <Thumbnail src={product.thumbnail ? product.thumbnail : '/defaultThumbnail.jpg'} />
-      <ProductInfoWrapper>
-        <Name>{product.name}</Name>
-        <Price>{product.price}원</Price>
-      </ProductInfoWrapper>
+      <PageHeader />
+      {product && (
+        <>
+          <Image
+            src={thumbnail ? thumbnail : '/defaultThumbnail.jpg'}
+            width={420}
+            height={420}
+            alt={name}
+            blurDataURL='/blur.jpg'
+            placeholder='blur'
+          />
+          <ProductInfoWrapper>
+            <Name>{name}</Name>
+            <Price>{price?.toLocaleString('ko-kr')}원</Price>
+          </ProductInfoWrapper>
+        </>
+      )}
     </>
   );
 };
 
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  try {
+    const { id } = context.query;
+    const { product } = await getProductInfo(id as string);
+
+    return {
+      props: { product },
+    };
+  } catch (err) {
+    console.log(err);
+    return {
+      props: {},
+    };
+  }
+};
+
 export default ProductDetailPage;
 
-const Header = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 20px;
-`;
-
-const Title = styled.a`
-  font-size: 48px;
-`;
-
-const Thumbnail = styled.img`
-  width: 100%;
-  height: 420px;
-`;
-
-const ProductInfoWrapper = styled.div`
+const ProductInfoWrapper = styled.main`
   margin-top: 20px;
   padding: 0 20px;
 `;

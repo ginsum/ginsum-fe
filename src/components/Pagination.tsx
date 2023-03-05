@@ -2,20 +2,38 @@ import React from 'react';
 import styled from 'styled-components';
 import { VscChevronLeft, VscChevronRight } from 'react-icons/vsc';
 
-const Pagination = () => {
+import usePagination from '../hooks/usePagination';
+
+type PaginationProps = {
+  totalCount: number;
+  page: number;
+};
+
+const Pagination = ({ totalCount, page }: PaginationProps) => {
+  const { currentPage, pageRange, totalPage, onClickPrevious, onClickNext, onClickPageNumber } =
+    usePagination({
+      totalCount,
+      page,
+    });
+
   return (
     <Container>
-      <Button disabled>
+      <Button disabled={currentPage - 5 <= 0} onClick={onClickPrevious}>
         <VscChevronLeft />
       </Button>
       <PageWrapper>
-        {[1, 2, 3, 4, 5].map((page) => (
-          <Page key={page} selected={page === 1} disabled={page === 1}>
+        {pageRange.map((page) => (
+          <Page
+            key={page}
+            selected={page === currentPage}
+            disabled={page === currentPage}
+            onClick={() => onClickPageNumber(page)}
+          >
             {page}
           </Page>
         ))}
       </PageWrapper>
-      <Button disabled={false}>
+      <Button disabled={currentPage / 5 >= totalPage / 5} onClick={onClickNext}>
         <VscChevronRight />
       </Button>
     </Container>

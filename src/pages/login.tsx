@@ -1,25 +1,58 @@
-import Link from 'next/link';
 import type { NextPage } from 'next';
-import React from 'react';
+import { useRouter } from 'next/router';
+import React, { useEffect } from 'react';
+import { FieldValues, useForm } from 'react-hook-form';
+import { useRecoilValue } from 'recoil';
 import styled from 'styled-components';
 
+import useAuth from '../hooks/useAuth';
+import { userInfoState } from '../recoil/atom';
+import { RHFIdRules, RHFPasswordRules } from '../utilities/reactHookForm';
+import PageHeader from '../components/PageHeader';
+import InputForm from '../components/InputForm';
+
 const LoginPage: NextPage = () => {
+  const { name } = useRecoilValue(userInfoState);
+  const router = useRouter();
+
+  useEffect(() => {
+    if (name) {
+      router.push('/');
+    }
+  }, [name]);
+
+  const {
+    register,
+    formState: { errors, isValid },
+    handleSubmit,
+  } = useForm({ mode: 'onBlur' });
+
+  const { login } = useAuth();
+
+  const onSubmit = (data: FieldValues) => {
+    login(data);
+  };
+
   return (
     <>
-      <Header>
-        <Link href='/'>
-          <Title>HAUS</Title>
-        </Link>
-        <Link href='/login'>
-          <p>login</p>
-        </Link>
-      </Header>
-      <Form>
-        <div>아이디</div>
-        <TextInput type='text' />
-        <div>비밀번호</div>
-        <TextInput type='password' />
-        <LoginButton disabled>로그인</LoginButton>
+      <PageHeader isLoginPage />
+      <Form onSubmit={handleSubmit(onSubmit)}>
+        <InputForm
+          type='text'
+          label='아이디'
+          errorText={errors.id?.message}
+          {...register('id', RHFIdRules)}
+        />
+        <InputForm
+          type='password'
+          label='비밀번호'
+          errorText={errors.password?.message}
+          {...register('password', RHFPasswordRules)}
+        />
+
+        <LoginButton type='submit' disabled={!isValid}>
+          로그인
+        </LoginButton>
       </Form>
     </>
   );
@@ -27,26 +60,11 @@ const LoginPage: NextPage = () => {
 
 export default LoginPage;
 
-const Header = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 20px;
-`;
-
-const Title = styled.a`
-  font-size: 48px;
-`;
-
-const Form = styled.div`
+const Form = styled.form`
   display: flex;
   flex-direction: column;
   margin-top: 40px;
   padding: 0 20px 40px;
-`;
-
-const TextInput = styled.input`
-  border: 1px solid #000;
 `;
 
 const LoginButton = styled.button`

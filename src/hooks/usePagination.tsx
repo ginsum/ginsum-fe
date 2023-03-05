@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 type UsePaginationProps = {
   totalCount: number;
@@ -12,18 +12,22 @@ const usePagination = ({ totalCount, page }: UsePaginationProps) => {
 
   const router = useRouter();
 
+  const getPageRange = (page: number) => {
+    const reminderFive = page % 5;
+    const startNum = reminderFive ? page - (page % 5) + 1 : page - 4;
+    const arr = [];
+    for (let i = 0; i < 5; i++) {
+      if (startNum + i <= totalPage) {
+        arr.push(startNum + i);
+      }
+    }
+    setPageRange(arr);
+  };
+
   useEffect(() => {
     if (page <= totalCount) {
       setCurrentPage(page);
-      const reminderFive = page % 5;
-      const startNum = reminderFive ? page - (page % 5) + 1 : page - 4;
-      const arr = [];
-      for (let i = 0; i < 5; i++) {
-        if (startNum + i <= totalPage) {
-          arr.push(startNum + i);
-        }
-      }
-      setPageRange(arr);
+      getPageRange(page);
     } else {
       router.push('/404');
     }

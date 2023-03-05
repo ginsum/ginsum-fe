@@ -3,8 +3,8 @@ import styled from 'styled-components';
 import { RecoilRoot } from 'recoil';
 
 import setupMSW from '../api/setup';
-import GlobalStyle from '../styles/GlobalStyle';
 import AuthGard from '../components/AuthGard';
+import GlobalStyle from '../styles/GlobalStyle';
 
 setupMSW();
 

@@ -20,7 +20,7 @@ const ProductItem = ({ product: { name, thumbnail, price, id } }: ProductItemPro
         placeholder='blur'
       />
       <Name>{name}</Name>
-      <Price>{price.toLocaleString()}</Price>
+      <Price>{price.toLocaleString('ko-kr')}</Price>
     </Container>
   </Link>
 );

@@ -4,8 +4,8 @@ import Image from 'next/image';
 import React, { useEffect } from 'react';
 import styled from 'styled-components';
 
-import PageHeader from '../../components/PageHeader';
 import { getProductInfo } from '../../fetch';
+import PageHeader from '../../components/PageHeader';
 
 type ProductDetailPageProps = InferGetServerSidePropsType<typeof getServerSideProps>;
 
@@ -33,7 +33,7 @@ const ProductDetailPage: NextPage = ({ product }: ProductDetailPageProps) => {
           />
           <ProductInfoWrapper>
             <Name>{name}</Name>
-            <Price>{price?.toLocaleString()}원</Price>
+            <Price>{price?.toLocaleString('ko-kr')}원</Price>
           </ProductInfoWrapper>
         </>
       )}

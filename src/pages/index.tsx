@@ -3,10 +3,10 @@ import type { GetServerSideProps, InferGetServerSidePropsType, NextPage } from '
 import React from 'react';
 import styled from 'styled-components';
 
+import { getProducts } from '../fetch';
 import ProductList from '../components/ProductList';
 import Pagination from '../components/Pagination';
 import PageHeader from '../components/PageHeader';
-import { getProducts } from '../fetch';
 
 type HomePageProps = InferGetServerSidePropsType<typeof getServerSideProps>;
 

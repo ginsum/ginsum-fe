@@ -3,8 +3,8 @@ import { useRecoilState } from 'recoil';
 import Cookies from 'universal-cookie';
 import jwtDecode from 'jwt-decode';
 
-import { userInfoState } from '../recoil/atom';
 import { getUerInfo } from '../fetch';
+import { userInfoState } from '../recoil/atom';
 
 type AuthGardProps = {
   children: ReactNode;
@@ -21,6 +21,7 @@ const AuthGard = ({ children }: AuthGardProps) => {
     if (id) {
       return;
     }
+    // 새로 고침 시 토큰 확인 후 로그인 유지
     if (accessToken) {
       const { user }: { user: { id: string } } = jwtDecode(accessToken);
       const { user: userInfo } = await getUerInfo(user.id);

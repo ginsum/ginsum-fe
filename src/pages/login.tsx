@@ -1,15 +1,15 @@
 import type { NextPage } from 'next';
 import { useRouter } from 'next/router';
 import React, { useEffect } from 'react';
-import styled from 'styled-components';
 import { FieldValues, useForm } from 'react-hook-form';
 import { useRecoilValue } from 'recoil';
+import styled from 'styled-components';
 
 import useAuth from '../hooks/useAuth';
+import { userInfoState } from '../recoil/atom';
 import { RHFIdRules, RHFPasswordRules } from '../utilities/reactHookForm';
 import PageHeader from '../components/PageHeader';
 import InputForm from '../components/InputForm';
-import { userInfoState } from '../recoil/atom';
 
 const LoginPage: NextPage = () => {
   const { name } = useRecoilValue(userInfoState);

@@ -5,13 +5,15 @@ import usePagination from '../hooks/usePagination';
 
 type PaginationProps = {
   totalCount: number;
-  currentPage: number;
+  page: number;
 };
 
-const Pagination = ({ totalCount, currentPage }: PaginationProps) => {
-  const { pageRange, totalPage, onClickPrevious, onClickNext, onClickPageNumber } = usePagination({
-    totalCount,
-  });
+const Pagination = ({ totalCount, page }: PaginationProps) => {
+  const { currentPage, pageRange, totalPage, onClickPrevious, onClickNext, onClickPageNumber } =
+    usePagination({
+      totalCount,
+      page,
+    });
 
   return (
     <Container>

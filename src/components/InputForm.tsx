@@ -13,7 +13,7 @@ const InputForm = forwardRef(({ type, label, errorText, ...others }: InputFormPr
   return (
     <Container>
       <LabelText>{label}</LabelText>
-      <Input type={type} ref={ref} {...others} />
+      <Input type={type} ref={ref} color={!!errorText ? '#fdedee' : '#f7f7fe'} {...others} />
       {typeof errorText === 'string' && <ErrorText>{errorText}</ErrorText>}
     </Container>
   );
@@ -37,7 +37,7 @@ const LabelText = styled.label`
 const Input = styled.input`
   margin-top: 8px;
   padding: 16px;
-  background: #f7f7fe;
+  background: ${(props) => props.color};
   border-radius: 12px;
 `;
 

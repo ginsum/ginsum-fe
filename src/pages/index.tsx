@@ -13,12 +13,13 @@ type HomePageProps = InferGetServerSidePropsType<typeof getServerSideProps>;
 const HomePage: NextPage = ({ products, totalCount }: HomePageProps) => {
   const router = useRouter();
   const { page = '1' } = router.query;
+
   return (
     <>
       <PageHeader />
       <Container>
         <ProductList products={products} />
-        <Pagination totalCount={totalCount} currentPage={+page} />
+        <Pagination totalCount={totalCount} page={+page} />
       </Container>
     </>
   );
